@@ -1,11 +1,26 @@
 import React from 'react';
-
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Login from './components/Login'
 
 function App() {
   return (
-    <div className="container">
-      <h1>Auth</h1>
-    </div>
+    <Router>
+      <div className="container">
+        <Navbar />
+        <Switch>
+          <Route path="/" exact>
+            index...
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/admin">
+            admin...
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
