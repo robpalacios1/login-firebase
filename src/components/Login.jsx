@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
+import {auth} from '../firebase'
 
 const Login = () => {
 
@@ -21,14 +22,34 @@ const Login = () => {
             setError('Ingrese Password')
             return
         }
-        setError(null)
 
         // Validacion minima de caracteres
         if(password.length < 6) {
             setError('Password debe contener minimo 6 caracteres')
             return
         }
+        setError(null)
+
+        if(esRegistro) {
+            registrar()
+        }
     }
+
+    const registrar = useCallback(async() => {
+
+        try {
+            const res = await auth.createUserWithEmailAndPassword(email, password)
+            console.log(res.user)
+        } catch (error) {
+            if (error.code === "auth/invalid-email") {
+                setError('Email no valido')
+            }
+            if (error.code === "auth/email-already-in-use") {
+                setError('E-mail creado anteriormente, intente con otro e-mail')
+            }
+        }
+
+    }, [email, password])
 
     return (
         <div className="mt-5">
@@ -62,8 +83,10 @@ const Login = () => {
                             onChange={e => setPassword(e.target.value)}
                             value={password}
                         />
-                        <button className="btn btn-dark btn-lg btn-block" type="submit">
-                            { 
+                        <button
+                            className="btn btn-dark btn-lg btn-block"
+                            type="submit">
+                            {
                                 esRegistro ? "Registrarse" : "Acceder"
                             }
                         </button>
