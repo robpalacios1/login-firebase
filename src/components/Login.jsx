@@ -1,12 +1,12 @@
 import React, {useCallback, useState} from 'react'
-import {auth} from '../firebase'
+import {auth, db} from '../firebase'
 
 const Login = () => {
 
     const[email, setEmail] = useState('')
     const[password, setPassword] = useState('')
     const[error, setError] = useState(null)
-    const[esRegistro, SetEsRegistro] = useState(true)
+    const[esRegistro, SetEsRegistro] = useState(false)
 
     const procesarDatos = (e) => {
         e.preventDefault()
@@ -32,15 +32,46 @@ const Login = () => {
 
         if(esRegistro) {
             registrar()
+        }else{
+            login()
         }
     }
+
+    const login = useCallback(async() => {
+
+        try {
+            const res = await auth.signInWithEmailAndPassword(email, password)
+            console.log(res.user)
+        } catch (error) {
+            console.log(error)
+            if (error.code === "auth/invalid-email") {
+                setError('E-mail no valido')
+            }
+            if (error.code === "auth/user-not-found") {
+                setError('Usuario no registrado')
+            }
+            if (error.code === "auth/wrong-password") {
+                setError('Contraseña incorrecta')
+            }
+        }
+
+    }, [email, password])
 
     const registrar = useCallback(async() => {
 
         try {
             const res = await auth.createUserWithEmailAndPassword(email, password)
             console.log(res.user)
+            await db.collection('usuarios').doc(res.user.email).set({
+                email: res.user.email,
+                uid: res.user.uid
+            })
+            setEmail('')
+            setPassword('')
+            setError(null)
+
         } catch (error) {
+            console.log(error)
             if (error.code === "auth/invalid-email") {
                 setError('Email no valido')
             }
