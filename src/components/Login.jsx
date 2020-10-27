@@ -1,7 +1,8 @@
 import React, {useCallback, useState} from 'react'
 import {auth, db} from '../firebase'
+import {withRouter} from 'react-router-dom'
 
-const Login = () => {
+const Login = (props) => {
 
     const[email, setEmail] = useState('')
     const[password, setPassword] = useState('')
@@ -42,6 +43,11 @@ const Login = () => {
         try {
             const res = await auth.signInWithEmailAndPassword(email, password)
             console.log(res.user)
+            setEmail('')
+            setPassword('')
+            setError(null)
+            props.history.push('./admin')
+
         } catch (error) {
             console.log(error)
             if (error.code === "auth/invalid-email") {
@@ -55,7 +61,7 @@ const Login = () => {
             }
         }
 
-    }, [email, password])
+    }, [email, password, props.history])
 
     const registrar = useCallback(async() => {
 
@@ -69,6 +75,7 @@ const Login = () => {
             setEmail('')
             setPassword('')
             setError(null)
+            props.history.push('./admin')
 
         } catch (error) {
             console.log(error)
@@ -80,7 +87,7 @@ const Login = () => {
             }
         }
 
-    }, [email, password])
+    }, [email, password, props.history])
 
     return (
         <div className="mt-5">
@@ -137,4 +144,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default withRouter(Login)
