@@ -75,7 +75,7 @@ const Login = (props) => {
             setEmail('')
             setPassword('')
             setError(null)
-            props.history.push('./admin')
+            props.history.push('/admin')
 
         } catch (error) {
             console.log(error)
@@ -111,14 +111,14 @@ const Login = (props) => {
                             type="email"
                             className="form-control mb-2"
                             placeholder="Ingrese su email"
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             value={email}
                         />
                         <input
                             type="password"
                             className="form-control mb-2"
                             placeholder="Ingrese su contraseña"
-                            onChange={e => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             value={password}
                         />
                         <button
